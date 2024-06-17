@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Register</title>
+    <style>
+        .container {
+            width: 300px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+        .toggle-link {
+            text-align: center;
+            margin-top: 10px;
+            cursor: pointer;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+
+<div id="login-container" class="container">
+    <h2>Login</h2>
+    <div class="form-group">
+        <label for="login-username">Username</label>
+        <input type="text" id="login-username">
+    </div>
+    <div class="form-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password">
+    </div>
+    <div class="form-group">
+        <button onclick="login()">Login</button>
+    </div>
+    <div class="toggle-link" onclick="showRegister()">계정이 없습니까? 회원가입하세요.</div>
+</div>
+
+<div id="register-container" class="container" style="display: none;">
+    <h2>Register</h2>
+    <div class="form-group">
+        <label for="register-username">Username</label>
+        <input type="text" id="register-username">
+    </div>
+    <div class="form-group">
+        <label for="register-password">Password</label>
+        <input type="password" id="register-password">
+    </div>
+    <div class="form-group">
+        <label for="register-email">Email</label>
+        <input type="email" id="register-email">
+    </div>
+    <div class="form-group">
+        <button onclick="register()">Register</button>
+    </div>
+    <div class="toggle-link" onclick="showLogin()">이미 계정이 있습니까? 로그인하세요.</div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const loggedInUser = localStorage.getItem('loggedInUser');
+        if (loggedInUser) {
+            window.location.href = 'homepage.html'; 
+        }
+    });
+
+    function showLogin() {
+        document.getElementById('login-container').style.display = 'block';
+        document.getElementById('register-container').style.display = 'none';
+    }
+
+    function showRegister() {
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('register-container').style.display = 'block';
+    }
+
+    function login() {
+        const username = document.getElementById('login-username').value;
+        const password = document.getElementById('login-password').value;
+
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+
+        if (storedUser && storedUser.username === username && storedUser.password === password) {
+            localStorage.setItem('loggedInUser', username); 
+            alert('성공적으로 로그인되었습니다!');
+            window.location.href = 'homepage.html';
+        } else {
+            alert('이름 또는 비밀번호가 틀렸습니다.');
+        }
+    }
+
+    function register() {
+        const username = document.getElementById('register-username').value;
+        const password = document.getElementById('register-password').value;
+        const email = document.getElementById('register-email').value;
+
+        if (!username || !password || !email) {
+            alert('모든 가입이 만료되었습니다.');
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('올바른 이메일을 써주세요.');
+            return;
+        }
+
+        const user = {
+            username: username,
+            password: password,
+            email: email
+        };
+
+        localStorage.setItem('user', JSON.stringify(user));
+        alert('성공적으로 회원가입되었습니다!');
+        showLogin();
+    }
+</script>
+
+</body>
+</html>
